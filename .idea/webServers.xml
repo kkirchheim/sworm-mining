@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="536d4066-27ae-4024-b6d5-9a7dab4690e8" name="turmfalke">
+        <fileTransfer rootFolder="/home/kirchhei/scopus/scopus-mining" accessType="SFTP" host="turmfalke" port="22" sshConfigId="876b0f68-1176-4982-be2c-5d3e6add9150" sshConfig="kirchhei@turmfalke:22 agent" authAgent="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

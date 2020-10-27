@@ -1,0 +1,84 @@
+# Journals Mentioned in
+# Assessing the Quality and Prestige of Disciplinary Social Work Journals: A National Study of Faculty Perceptions
+
+Journals:
+  # first tier
+  - name: "Social Service Review"
+    issn:
+      - 00377961
+      - 15375404
+  - name: "Journal of the Society for Social Work and Research"
+    issn:
+      - 23342315
+      - 1948822X
+  - name: "Research on Social Work Practice"
+    issn:
+      - 10497315
+      - 15527581
+  - name: "Social Work"
+    issn:
+      - 15456846
+      - 00378046
+  - name: "British Journal of Social Work"
+    issn:
+      - 00453102
+      - 1468263X
+  - name: "Social Work Research"
+    issn:
+      - 15456838
+      - 10705309
+  - name: "Journal of Social Work Education"
+    issn:
+      - 10437797
+      - 21635811
+  - name: "Families in Society"
+    issn:
+      - 10443894
+  - name: "Journal of Social Service Research"
+    issn:
+      - 01488376
+      - 15407314
+  - name: "Qualitative Social Work"
+    issn:
+      - 14733250
+
+  # second tier
+  - name: "Health and Social Work"
+    issn:
+        - 15456854
+        - 03607283
+  - name: "Social Work in Health Care"
+    issn:
+      - 00981389
+      - 1541034X
+  - name: "Journal of Sociology and Social Welfare"
+    issn:
+      - 01915096
+  - name: "Affilia: Journal of Women and Social Work"
+    issn:
+      - 15523020
+      - 08861099
+  - name: "Journal of Gerontological Social Work"
+    issn:
+      - 15404048
+      - 01634372
+  - name: "Child and Adolescent Social Work Journal"
+    issn:
+      - 07380151
+      - 15732797
+  - name: "International Social Work"
+    issn:
+      - 00208728
+      - 14617234
+  - name: "Journal of Community Practice"
+    issn:
+      - 15433706
+      - 10705422
+  - name: "Journal of Social Work Practice"
+    issn:
+      - 14653885
+      - 02650533
+  - name: "Journal of Teaching in Social Work"
+    issn:
+      - 15407349
+      - 08841233
