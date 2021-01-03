@@ -1,8 +1,13 @@
 #
-all: journals documents
+all: fetch preprocess
 
-journals:
-	python src/fetch_journals.py
+fetch:
+	python src/fetch.py journals
+	python src/fetch.py documents
 
-documents:
-	python src/fetch_documents.python
+preprocess:
+	python src/preprocess.py journals
+	python src/preprocess.py authors
+	python src/preprocess.py affiliations
+
+

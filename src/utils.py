@@ -8,6 +8,22 @@ import json
 import src.constants as const
 
 
+def disable_elsapy_logging():
+    """
+    Elsapy logs wherever it wants, and has no option to disable this. Running this before importing elsapy fixes this.
+    """
+    import elsapy.log_util
+    elsapy.log_util.get_logger = lambda name: logging.getLogger(name)
+
+
+def install_elsapy_workarounds() -> None:
+    """
+    Install workaround
+    :return:
+    """
+    disable_elsapy_logging()
+
+
 def read_resource(path):
     lines = []
     with open(path, "r") as f:
