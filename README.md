@@ -28,8 +28,20 @@ ant
 The binary will then be located in `bin/mallet`.
 
 ## Usefull links
-Documentation:
-[Elsevier API doc](https://dev.elsevier.com/technical_documentation.html)
 
-Search for Journal ISSNs: 
-[Scimago Journal & Country Rank](https://www.scimagojr.com/journalsearch.php)
+### Documentation:
+- [Elsevier API doc](https://dev.elsevier.com/technical_documentation.html)
+- RDF Site Summary 1.0 Modules: [PRISM](http://www.prismstandard.org/resources/mod_prism.html)
+  
+### Tools
+- Search for Journal ISSNs:  [Scimago Journal & Country Rank](https://www.scimagojr.com/journalsearch.php)
+
+### Models
+- [Pytorch doc2vec](https://github.com/inejc/paragraph-vectors)
+
+### Related Work
+- COVID-19 Literature Clustering [GitHub](https://github.com/MaksimEkin/COVID19-Literature-Clustering)
+
+### 
+- gender API: determine gender by name 
+- [Orion OpenScience](https://www.orion-openscience.eu)

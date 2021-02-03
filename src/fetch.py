@@ -15,18 +15,17 @@ import sys
 import click
 import pandas as pd
 import os
-from os.path import join
 import logging
 import json
 
 # own imports
 import utils as utils
-import constants as const
+from constants import *
 
 log = logging.getLogger(__name__)
 
 
-def fetch_journal_data(client, issn, view="COMPLETE") -> pd.DataFrame():
+def fetch_journal(client, issn, view="COMPLETE") -> pd.DataFrame():
     query = f"ISSN({issn})"
     doc_srch = ElsSearch(query, 'scopus')
 
@@ -43,6 +42,38 @@ def fetch_journal_data(client, issn, view="COMPLETE") -> pd.DataFrame():
     return doc_srch.results_df
 
 
+def fetch_and_write_journal(client, journal, skip_existing):
+    name = journal["name"]
+    issns = journal["issn"]
+    for issn in issns:
+
+        out_path_pickle = join(JOURNALS_DIR, f"{issn}.pkl")
+        out_path_csv = join(JOURNALS_DIR, f"{issn}.csv")
+
+        if skip_existing and (exists(out_path_pickle) or exists(out_path_csv)):
+            log.info(f"Skipping {issn}")
+            continue
+
+        log.info(f"Loading publications for journal '{name}' ({issn})")
+
+        try:
+            df = fetch_journal(client, issn=issn)
+            log.info(f"Writing to {out_path_pickle}")
+            df.to_pickle(out_path_pickle)
+            log.info(f"Writing to {out_path_csv}")
+            df.to_csv(out_path_csv)
+        except HTTPError as e:
+            if "AUTHORIZATION_ERROR" in str(e):
+                log.fatal("Authorization Failed.")
+                sys.exit(1)
+            else:
+                log.exception(e)
+                sys.exit(2)
+        except Exception as e:
+            log.exception(e)
+            sys.exit(3)
+
+
 def fetch_document(client, uri) -> dict:
     log.info(f"Fetching {uri}")
     scp_doc = AbsDoc(uri=uri)
@@ -54,12 +85,12 @@ def fetch_document(client, uri) -> dict:
         return None
 
 
-def fetch_and_write(client, pub, skip_existing=True) -> bool:
+def fetch_and_write_document(client, pub, skip_existing=True) -> bool:
     issn = pub["prism:issn"]
     scp_id = pub["dc:identifier"].replace("SCOPUS_ID:", "")
     uri = pub["prism:url"]
 
-    d = join(const.DOCUMENTS_DIR, str(issn))
+    d = join(DOCUMENTS_DIR, str(issn))
     os.makedirs(d, exist_ok=True)
     path = os.path.join(d, f"{scp_id}.json")
 
@@ -73,7 +104,7 @@ def fetch_and_write(client, pub, skip_existing=True) -> bool:
         return False
 
     issn = pub["prism:issn"]
-    d = join(const.DOCUMENTS_DIR, str(issn))
+    d = join(DOCUMENTS_DIR, str(issn))
     os.makedirs(d, exist_ok=True)
     path = os.path.join(d, f"{scp_id}.json")
     with open(path, "w") as fi:
@@ -88,15 +119,15 @@ def fetch_docs():
     Fetch journals
     """
     utils.configure_logging()
-    files = os.listdir(const.JOURNALS_DIR)
+    files = os.listdir(JOURNALS_DIR)
     files.sort()
     files = [f for f in files if f.endswith(".csv")]
     log.info(f"Found {len(files)} journals")
 
-    files = [join(const.JOURNALS_DIR, f) for f in files]
+    files = [join(JOURNALS_DIR, f) for f in files]
 
     config = utils.get_elsa_config()
-    client = ElsClient(config['apikey'], local_dir=const.CACHE_DIR)
+    client = ElsClient(config['apikey'], local_dir=CACHE_DIR)
 
     df = pd.concat([pd.read_csv(p) for p in files])
     log.info(f"Fetching {len(df)} documents")
@@ -109,13 +140,16 @@ def fetch_docs():
             if count > 100:
                 break
 
-            fetch_and_write(client, pub, skip_existing=False)
+            fetch_and_write_document(client, pub, skip_existing=False)
             count += 1
 
 
 @click.group()
 def cli():
-    pass
+    """
+    Command line interface for downloading from the scopus API
+    """
+    utils.configure_logging()
 
 
 @cli.command("journals")
@@ -126,46 +160,17 @@ def fetch_journals(skip_existing, issn):
     Fetch journals
     """
     config = utils.get_elsa_config()
-    client = ElsClient(config['apikey'], local_dir=const.CACHE_DIR)
+    client = ElsClient(config['apikey'], local_dir=CACHE_DIR)
 
     if issn is None:
-        with open(const.RESOURCE_JOURNALS, "r") as f:
+        with open(RESOURCE_JOURNALS, "r") as f:
             journals = yaml.load(f, Loader=yaml.SafeLoader)["Journals"]
     else:
         journals = [{"name": issn, "issn": [issn]}]
 
     for journal in journals:
-        name = journal["name"]
-        issns = journal["issn"]
-        for issn in issns:
-
-            out_path_pickle = join(const.JOURNALS_DIR, f"{issn}.pkl")
-            out_path_csv = join(const.JOURNALS_DIR, f"{issn}.csv")
-
-            if skip_existing and (exists(out_path_pickle) or exists(out_path_csv)):
-                log.info(f"Skipping {issn}")
-                continue
-
-            log.info(f"Loading publications for journal '{name}' ({issn})")
-
-            try:
-                df = fetch_journal_data(client, issn=issn)
-                log.info(f"Writing to {out_path_pickle}")
-                df.to_pickle(out_path_pickle)
-                log.info(f"Writing to {out_path_csv}")
-                df.to_csv(out_path_csv)
-            except HTTPError as e:
-                if "AUTHORIZATION_ERROR" in str(e):
-                    log.fatal("Authorization Failed.")
-                    sys.exit(1)
-                else:
-                    log.exception(e)
-                    sys.exit(2)
-            except Exception as e:
-                log.exception(e)
-                sys.exit(3)
+        fetch_and_write_journal(client, journal, skip_existing)
 
 
 if __name__ == "__main__":
-    utils.configure_logging()
     cli()

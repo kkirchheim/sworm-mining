@@ -8,7 +8,6 @@ import csv
 from collections import OrderedDict
 import logging
 import click
-import time
 
 #
 import constants as const
@@ -18,6 +17,7 @@ import utils
 log = logging.getLogger(__name__)
 
 
+@utils.timed
 def get_cooccurences(documents, all_values):
     # a dic of dicts, one dic per keyword, containing co-occurences with other dicts
     occurrences = OrderedDict((str(key), OrderedDict((str(key), 0) for key in all_values)) for key in all_values)
@@ -53,10 +53,7 @@ def authors_cooc():
     log.info(f"Unique Affiliations: {len(all_affiliations)}")
 
     log.info("Calculating co-occurences")
-    t1 = time.perf_counter()
     occurrences = get_cooccurences(doc_affiliations, all_affiliations)
-    t2 = time.perf_counter()
-    log.info(f"Took {t2 - t1} s")
     co_occur = pd.DataFrame.from_records(occurrences)
     co_occur.to_csv(join(const.ARTIFACTS_DIR, "affiliations-cooc.csv"), sep=";", quoting=csv.QUOTE_ALL)
 
@@ -79,10 +76,7 @@ def authors_cooc(n_authors):
     log.info(f"Unique Authors: {len(all_authors)}")
 
     log.info("Calculating keyword co-occurences")
-    t1 = time.perf_counter()
     occurrences = get_cooccurences(doc_authors, all_authors)
-    t2 = time.perf_counter()
-    log.info(f"Took {t2 - t1} s")
     co_occur = pd.DataFrame.from_records(occurrences)
     co_occur.to_csv(join(const.ARTIFACTS_DIR, "authors-cooc.csv"), sep=";", quoting=csv.QUOTE_ALL)
 

@@ -5,7 +5,23 @@ import logging
 import os
 from datetime import datetime
 import json
-import src.constants as const
+import time
+import constants as const
+from constants import CACHE_DIR
+
+
+log = logging.getLogger(__name__)
+
+
+def timed(function):
+    def inner(*args, **kwargs):
+        t1 = time.perf_counter()
+        ret = function(*args, **kwargs)
+        t2 = time.perf_counter()
+        log.info(f"Took: {t2 - t1:.2f} s")
+        return ret
+
+    return inner
 
 
 def disable_elsapy_logging():
@@ -55,3 +71,11 @@ def get_elsa_config():
     config = json.load(con_file)
     con_file.close()
     return config
+
+
+def setup_nltk_cache():
+    import nltk
+    nltk.data.path.append(CACHE_DIR)
+    nltk.download('wordnet', download_dir=CACHE_DIR)
+    nltk.download('punkt', download_dir=CACHE_DIR)
+    nltk.download('stopwords', download_dir=CACHE_DIR)
