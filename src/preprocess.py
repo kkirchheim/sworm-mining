@@ -16,6 +16,8 @@ from gensim.utils import simple_preprocess, lemmatize
 from collections import OrderedDict, Counter
 from functools import partial
 import re
+import tqdm
+
 
 # local imports
 import utils
@@ -26,10 +28,10 @@ log = logging.getLogger(__name__)
 
 
 class SpacyTokenizer:
-    def __init__(self, model="en_core_web_sm"):
+    def __init__(self, model="en_core_web_lg"):
         self.nlp = spacy.load(model)
 
-    def __call__(self, document: str):
+    def tokenize(self, document: str):
         """
         Remove stopwords, non-alpha numeric words, and lemmatize
 
@@ -45,7 +47,7 @@ class SpacyTokenizer:
             n_docs = len(document)
             log.info(f"Piping through Spacy... ({n_docs})")
             disable = ["tagger", "parser", "ner", "textcat"]
-            docs_tokens = self.nlp.pipe(document, n_threads=-1, batch_size=10, disable=disable)
+            docs_tokens = self.nlp.pipe(document)
             log.info("Gathering results")
 
             d = []
@@ -158,6 +160,7 @@ def process_remove_regex(x, regex):
 
     return x
 
+
 @utils.timed
 def remove_copyright(df):
     """
@@ -258,7 +261,7 @@ def tokenize_abstracts_spacy(df):
     nan = df[ABSTRACTS].isna()
     abstracts = df[ABSTRACTS][~nan].tolist()
 
-    tokenized = tokenizer(abstracts)
+    tokenized = tokenizer.tokenize(abstracts)
 
     return pd.Series(tokenized, index=df.index[~nan])
 
@@ -448,8 +451,31 @@ def cli():
     utils.configure_logging()
 
 
+@cli.command("spacy")
+@click.option("--model", "-m", "model", type=str, default="en_core_web_sm")
+@click.option("--no-progress", "disable_progress", type=bool, is_flag=True, default=False)
+def preprocess_spacy(model, disable_progress):
+    """
+    Spacy preprocessing
+    """
+    log.info("Loading dataframe")
+    df = pd.read_pickle(JOURNALS_DF)
+    drop = df[ABSTRACTS].isna()
+    log.info(f"Dropping {drop.sum()}")
+    df = df[~drop]
+
+    nlp = spacy.load(model)
+
+    documents = nlp.pipe(df[ABSTRACTS], batch_size=1)
+
+    for ident, document in tqdm.tqdm(zip(df.index, documents), total=len(df), disable=disable_progress):
+        path = join(SPACY_DIR, f"{ident}.spacy")
+        # log.info(f"Writing to {path}")
+        document.to_disk(path)
+
+
 @cli.command("affiliations")
-def affiliations():
+def preprocess_affiliations():
     """
     Extract affiliation information
     """
@@ -480,7 +506,7 @@ def affiliations():
 
 
 @cli.command("authors")
-def authors():
+def preprocess_authors():
     """
     Extract author information
     """
@@ -531,7 +557,7 @@ def authors():
               help="Activate tokenization with SpaCy and preprocessing for GenSim. Takes some time.")
 @click.option("-p", "--pos-tag", "pos_tag", is_flag=True, type=bool, default=False,
               help="Activate Part of Speech (PoS) Tagging with SpaCy. Takes some time.")
-def journals(max_features, n_keywords, tokenize, pos_tag):
+def preprocess_journals(max_features, n_keywords, tokenize, pos_tag):
     """
     Process dataframes of downloaded journals.
     """

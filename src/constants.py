@@ -3,7 +3,7 @@
 """
 from os.path import join, dirname, abspath
 
-PROJECT_ROOT = join(abspath(dirname(__file__)), "..")
+PROJECT_ROOT = abspath(join(dirname(__file__), ".."))
 
 # DIRECTORIES
 RESOURCES_DIR = join(PROJECT_ROOT, "resources")
@@ -15,6 +15,8 @@ DOCUMENTS_DIR = join(DATA_DIR, "documents")
 ARTIFACTS_DIR = join(DATA_DIR, "artifacts")
 BOKEH_DIR = join(ARTIFACTS_DIR, "bokeh")
 MODELS_DIR = join(DATA_DIR, "models")
+SPACY_DIR = join(DATA_DIR, "spacy")
+
 
 # FILES
 CONFIG_FILE = join(DATA_DIR, "config.json")
