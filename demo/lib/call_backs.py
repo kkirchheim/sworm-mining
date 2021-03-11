@@ -27,11 +27,13 @@ def selection_callback(source):
         console.log(key);
         console.log(clusters);
         
+        var found = 0;
+        
         for (var i = 0; i < x1.length; i++) {
-            var select_text = abstract[i].includes(key) 
-                || title[i].includes(key) 
-                || author[i].includes(key) 
-                || journal[i].includes(key);
+            var select_text = abstract[i].toLowerCase().includes(key.toLowerCase()) 
+                || title[i].toLowerCase().includes(key.toLowerCase()) 
+                || author[i].toLowerCase().includes(key.toLowerCase()) 
+                || journal[i].toLowerCase().includes(key.toLowerCase());
             
             var select_cluster = clusters.includes(String(label[i]));
             var select_date = timestamp[i] > lower && timestamp[i] < upper;
@@ -39,11 +41,14 @@ def selection_callback(source):
             if(select_date && select_text && select_cluster) {
                 x1[i] = x1_backup[i];
                 x2[i] = x2_backup[i];
+                found++;
             } else {
                 x1[i] = undefined;
                 x2[i] = undefined;
             }
         }
+        
+        text_info.text = "Documents: " + found; 
         source.change.emit();
         
     """)
