@@ -87,25 +87,25 @@ Journals:
   - name: "Australian Social Work"
     issn:
       - 0312407X
-  - name: "Qualitative Social Work"
-    issn:
-      - 14733250
+#  - name: "Qualitative Social Work"
+#    issn:
+#      - 14733250
   - name: "Child and Family Social Work"
     issn:
       - 13652206
       - 13567500
-  - name: "Journal of the Society for Social Work and Research"
-    issn:
-      - 1948822X
-      - 23342315
-  - name: "Health & Social Work"
-    issn:
-      - 15456854
-      - 03607283
+#  - name: "Journal of the Society for Social Work and Research"
+#    issn:
+#      - 1948822X
+#      - 23342315
+#  - name: "Health & Social Work"
+#    issn:
+#      - 15456854
+#      - 03607283
   - name: "European Journal of Social Work"
     issn:
       - 13691457
-  - name: "Research on Social Work Practice"
-    issn:
-      - 10497315
-      - 15527581
+#  - name: "Research on Social Work Practice"
+#    issn:
+#      - 10497315
+#      - 15527581

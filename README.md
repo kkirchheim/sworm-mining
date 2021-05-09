@@ -42,6 +42,6 @@ The binary will then be located in `bin/mallet`.
 ### Related Work
 - COVID-19 Literature Clustering [GitHub](https://github.com/MaksimEkin/COVID19-Literature-Clustering)
 
-### 
+### Other 
 - gender API: determine gender by name 
 - [Orion OpenScience](https://www.orion-openscience.eu)

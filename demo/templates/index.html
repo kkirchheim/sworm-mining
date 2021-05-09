@@ -1,0 +1,38 @@
+{% extends base %}
+
+{% block preamble %}
+{% endblock %}
+
+{% block postamble %}
+<script>
+  document.addEventListener("DOMCententLoaded", alert("Hello World"));
+</script>
+<style>
+  .load-activity {
+    text-align: center;
+    color: green;
+  }
+</style>
+{% endblock %}
+
+
+{% block contents %}
+<div class="load-activity">
+  Loading ....
+</div>
+
+<div class="container body">
+  <div class="main_container">
+
+    <!-- page content -->
+    <div class="container-fluid" role="main">
+        {{ embed(roots.main) }}
+    </div>
+  </div>
+    <!-- /page content -->
+</div>
+
+<script>
+  alert("Done");
+</script>
+{% endblock %}

@@ -31,6 +31,12 @@ AUTHORS_DF_CSV = join(ARTIFACTS_DIR, "authors.csv")
 AFFILIATIONS_DF = join(ARTIFACTS_DIR, "affiliations.pkl")
 AFFILIATIONS_DF_CSV = join(ARTIFACTS_DIR, "affiliations.csv")
 
+TFIDF_EMBEDDING = join(BOKEH_DIR, "X-embedding-tfidf.pkl")
+TFIDF_CLUSTERING= join(BOKEH_DIR, "y-pred-tfidf.pkl")
+
+CLEAN_DF_STM = join(ARTIFACTS_DIR, "bereinigtes_df_scopus_13_04_2021.csv")
+CLEAN_TOPICS_STM = join(ARTIFACTS_DIR, "theta_stm_scopus_13_04_2021.csv")
+
 
 # COLUMN NAMES
 AFFILIATION_COUNTRY = "affiliation:country"
