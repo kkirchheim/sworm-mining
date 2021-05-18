@@ -6,11 +6,13 @@ from bokeh.palettes import Turbo256, linear_palette
 from bokeh.transform import factor_cmap
 from bokeh.models import HoverTool
 from datetime import date
-from bokeh.models import ColumnDataSource
-from bokeh.models import TextInput, DateRangeSlider, MultiChoice, Div, CustomJS, TapTool, RangeSlider
+from bokeh.models import ColumnDataSource, Legend, LegendItem
+from bokeh.models import TextInput, DateRangeSlider, MultiChoice, Div, CustomJS, TapTool, RangeSlider, MultiSelect
 from bokeh.io import curdoc
 from bokeh.layouts import column, row
 from bokeh.models.widgets import Tabs, Panel
+from bokeh.themes import Theme
+from os.path import join, dirname
 import time
 
 import logging
@@ -23,17 +25,8 @@ log = logging.getLogger(__name__)
 
 def configure_logging():
     fmt = "[%(levelname)s] %(asctime)s - %(name)s: %(message)s"
-    # formatter = logging.Formatter(fmt=fmt)
     logging.basicConfig(level=logging.INFO, format=fmt)
-
     logging.getLogger().setLevel(logging.DEBUG)
-
-    # ch = logging.StreamHandler()
-    # ch.setLevel(logging.INFO)
-    # ch.setFormatter(formatter)
-    # root.addHandler(ch)
-    # root.setLevel(logging.DEBUG)
-    # root.debug("Logging configured")
 
 
 def create_color_mapper(topics):
@@ -61,12 +54,14 @@ def create_hover_tool():
 
 
 def main():
+    """
+    Create bokeh plot
+    """
     configure_logging()
 
     log.info(f"Loading data...")
     t1 = time.perf_counter()
     d = df.copy()
-    d["abstract"] = d["abstract"].apply(lambda x: "")
 
     source = ColumnDataSource(d)
     log.info(f"Loading took: {time.perf_counter() - t1} s")
@@ -79,8 +74,19 @@ def main():
                   tools=[hover, 'pan', 'wheel_zoom', 'box_zoom', 'reset', 'save', 'tap'],
                   title=None, toolbar_location="above")
 
-    plot.scatter(source=source, x="x1", y="x2", size=5, fill_color=color_mapper, line_alpha=0.3,
-                 line_color="black", legend_field="cluster")
+    renderer = plot.scatter(source=source, x="x1", y="x2", size=5, fill_color=color_mapper, line_alpha=0.3,
+                 line_color="gray", legend_field="cluster")
+
+    log.info(renderer)
+
+    # log.info(dir(renderer))
+    # # LegendItem()
+    # legend_items = [LegendItem(label=name, renderers=[renderer]) for name in topic_list]
+    # legend_kw = dict(spacing=10,  label_text_font_size="10pt", orientation='vertical')
+    # legend = Legend(items=legend_items[:2], location=(10, 0), **legend_kw)
+    # plot.add_layout(legend, 'right')
+    # legend = Legend(items=legend_items[2:], location=(160, 0), **legend_kw)
+    # plot.add_layout(legend, 'right')
 
     div_info = Div(text="Click on an article for details.", height=150)
     callback_selected = CustomJS(args=dict(source=source, current_selection=div_info), code=cb.selected_code())
@@ -115,13 +121,13 @@ def main():
     )
     citation_count_slider.js_on_change("value", input_callback)
 
-    journal_choice = MultiChoice(value=journal_list, options=journal_list)
+    journal_choice = MultiSelect(value=journal_list, options=journal_list, size=25)
     journal_choice.js_on_change("value", input_callback)
 
-    topic_choice = MultiChoice(value=topic_list, options=topic_list)
+    topic_choice = MultiSelect(value=topic_list, options=topic_list, size=25)
     topic_choice.js_on_change("value", input_callback)
 
-    country_choice = MultiChoice(value=country_list, options=country_list)
+    country_choice = MultiSelect(value=country_list, options=country_list, size=25)
     country_choice.js_on_change("value", input_callback)
 
     # pass call back arguments
@@ -142,7 +148,12 @@ def main():
     plot.sizing_mode = "scale_both"
     plot.margin = 5
     plot.legend.visible = True
+    plot.legend.spacing = -7
     plot.legend.label_text_font_size = "10px"
+    # plot.legend.orientation = "horizontal"
+    # plot.legend.location = "top_center"
+
+    plot.toolbar.autohide = True
     # plot.legend.click_policy="hide"
     plot.add_layout(plot.legend[0], 'right')
     plot.toolbar.logo = None
@@ -176,6 +187,7 @@ def main():
 
     curdoc().add_root(layout)
     curdoc().title = "SWORM"
+    # curdoc().theme = Theme(join(dirname(__file__), "theme.yaml"))
     log.info(f"Finished:  {time.perf_counter() - t3} s")
 
 

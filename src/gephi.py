@@ -2,17 +2,17 @@
 """
 Scripts to create files for gephi
 """
-from os.path import join
-import pandas as pd
 import csv
-from collections import OrderedDict
 import logging
+from collections import OrderedDict
+from os.path import join
+
 import click
+import pandas as pd
 
 #
 import constants as const
 import utils
-
 
 log = logging.getLogger(__name__)
 
@@ -107,5 +107,3 @@ def keywords_cooc():
 
 if __name__ == "__main__":
     cli()
-
-

@@ -14,5 +14,8 @@ COPY data/artifacts/bokeh/topic-list.pkl data/artifacts/bokeh/
 COPY data/artifacts/bokeh/journal-list.pkl data/artifacts/bokeh/
 
 ENV PATH="${PATH}:/home/bokeh/.local/bin"
+
+EXPOSE 5006
+
 CMD [ "bokeh", "serve", "demo"]
 

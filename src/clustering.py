@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 """
-Scripts for calculating embeddings and clustering acticles based on abstracts
+Scripts for calculating embeddings and clustering based on abstracts
 """
 import utils
+
 utils.install_elsapy_workarounds()
 
 import click
@@ -78,6 +79,3 @@ def tfidf(file, topics=20, tfidf_dim=5000, pca_dimm=20, seed=42, perplexity=100)
 
 if __name__ == '__main__':
     cli()
-
-
-

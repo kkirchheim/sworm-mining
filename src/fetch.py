@@ -3,6 +3,7 @@
 Scripts for fetching data from the scopus API
 """
 import utils
+
 utils.install_elsapy_workarounds()
 
 from requests import HTTPError
@@ -113,10 +114,18 @@ def fetch_and_write_document(client, pub, skip_existing=True) -> bool:
     return True
 
 
-@click.command("documents")
+@click.group()
+def cli():
+    """
+    Command line interface for downloading from the scopus API
+    """
+    utils.configure_logging()
+
+
+@cli.command("documents")
 def fetch_docs():
     """
-    Fetch journals
+    Fetch individual documents for journals
     """
     utils.configure_logging()
     files = os.listdir(JOURNALS_DIR)
@@ -144,17 +153,9 @@ def fetch_docs():
             count += 1
 
 
-@click.group()
-def cli():
-    """
-    Command line interface for downloading from the scopus API
-    """
-    utils.configure_logging()
-
-
 @cli.command("journals")
 @click.option("--skip-existing/--no-skip-existing", default=True)
-@click.option("-i", "--issn", default=None)
+@click.option("-i", "--issn", default=None, help="ISSN of the journal to fetch from Scopus")
 def fetch_journals(skip_existing, issn):
     """
     Fetch journals

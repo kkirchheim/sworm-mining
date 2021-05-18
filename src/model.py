@@ -2,18 +2,18 @@
 """
 Create different models from data
 """
-import click
 import logging
-import gensim
-from gensim import corpora
+import sys
 from os.path import join
-import src.constants as const
+
+import click
+import gensim
 import pandas as pd
+from gensim import corpora
 from gensim.models import LdaMulticore, LdaModel
 from gensim.models.wrappers import LdaMallet
-import sys
 
-
+import src.constants as const
 import utils
 
 log = logging.getLogger(__name__)
@@ -119,7 +119,7 @@ def predict_lda_gensim(df, dictionary, lda_model, column_name) -> pd.DataFrame:
 
 
 @cli.command("lda-mallet")
-@click.argument("mallet_path") # path to mallet binary
+@click.argument("mallet_path")  # path to mallet binary
 @click.option("-t", "--topics", "n_topics", type=int, default=20, help="Number of LDA topics")
 def create_lda_mallet(mallet_path, n_topics):
     """

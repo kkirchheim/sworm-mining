@@ -1,5 +1,5 @@
 """
-
+Constants used in thus project
 """
 from os.path import join, dirname, abspath
 
@@ -17,7 +17,6 @@ BOKEH_DIR = join(ARTIFACTS_DIR, "bokeh")
 MODELS_DIR = join(DATA_DIR, "models")
 SPACY_DIR = join(DATA_DIR, "spacy")
 
-
 # FILES
 CONFIG_FILE = join(DATA_DIR, "config.json")
 RESOURCE_JOURNALS = join(RESOURCES_DIR, "journals.yaml")
@@ -32,11 +31,10 @@ AFFILIATIONS_DF = join(ARTIFACTS_DIR, "affiliations.pkl")
 AFFILIATIONS_DF_CSV = join(ARTIFACTS_DIR, "affiliations.csv")
 
 TFIDF_EMBEDDING = join(BOKEH_DIR, "X-embedding-tfidf.pkl")
-TFIDF_CLUSTERING= join(BOKEH_DIR, "y-pred-tfidf.pkl")
+TFIDF_CLUSTERING = join(BOKEH_DIR, "y-pred-tfidf.pkl")
 
 CLEAN_DF_STM = join(ARTIFACTS_DIR, "bereinigtes_df_scopus_13_04_2021.csv")
 CLEAN_TOPICS_STM = join(ARTIFACTS_DIR, "theta_stm_scopus_13_04_2021.csv")
-
 
 # COLUMN NAMES
 AFFILIATION_COUNTRY = "affiliation:country"
@@ -50,7 +48,6 @@ ABSTRACTS = "dc:description"
 IDENTIFIER = "dc:identifier"
 AUTHOR_NAME = "author:name"
 AUTHOR_ID = "author:id"
-
 
 # list with regular expressions for copyright watermarks.
 # most of them could be aggregated into single expressions ...
@@ -89,17 +86,17 @@ COPYRIGHT_REGEX = [
     r"© \d\d\d\d Oxford University Press.\s*",
 
     # © 1974 by the National Association of Social Workers, Inc.
-    r"Copyright \d\d\d\d by the National Association of Social Workers." # 2 lines
+    r"Copyright \d\d\d\d by the National Association of Social Workers."  # 2 lines
     "© \d\d\d\d by the National Association of Social Workers, Inc.\s*",
 
     r"©\d\d\d\d, National Association of Social Workers.",
-    r"\d\d\d\d National Association of Social Workers\d\d\d\d\s*", # Typo
+    r"\d\d\d\d National Association of Social Workers\d\d\d\d\s*",  # Typo
     r"© \d\d\d\d by the National Association of Social Workers, Inc.\s*",
     r"© \d\d\d\d[,]* by the National Association of Social Workers, Inc.\s*",
     r"© \d\d\d\d[,]* by the National Association of Social Workers.\s*",
     r"© \d\d\d\d The National Association of Social Workers, Inc.\s*",
     r"© \d\d\d\d the National Association of Social Workers, Inc.\s*",
-    r"© \d\d\d\d National Association of SocialWorkers.\s*", # typo
+    r"© \d\d\d\d National Association of SocialWorkers.\s*",  # typo
     r"© © \d\d\d\d[,]* National Association of Social Workers.\s*",
     r"© \d\d\d\d[,]* National Association of Social Workers\.\s*",
     r"© \d\d\d\d[,]* National Association of Social Workers, Inc\.\s*",
@@ -111,7 +108,7 @@ COPYRIGHT_REGEX = [
     r"\d\d\d\d National Association of Social Workers.",
     r"© \d\d\d\d by National Association of Social Workers, Inc.",
     r"© \d\d\d\d National Association of Workers.",
-    r"© \d\d\d\d, Notional Associotion of Social Workers, Inc.", # typo
+    r"© \d\d\d\d, Notional Associotion of Social Workers, Inc.",  # typo
     r"© \d\d\d\d, Notional Association of Social Workers, Inc.",
     r"© National Association of Social Workers, Inc.",
 
@@ -126,8 +123,8 @@ COPYRIGHT_REGEX = [
     r"Article copies available for a fee from The Haworth Document.*",
     r"© \d\d\d\d, The Haworth Press, Inc.",
     r"© Copyright \(c\) by The Haworth Press, Inc.\s*",
-    r"© \d\d\d\d by the Haworth Press, Inc.\s*", #?
-    r"© \d\d\d\d by The Hawonh Press, Inc.\s*", # typo
+    r"© \d\d\d\d by the Haworth Press, Inc.\s*",  # ?
+    r"© \d\d\d\d by The Hawonh Press, Inc.\s*",  # typo
     r"© \d\d\d\d by The Haworth Press, Inc.\s*",
     r"© \d\d\d\d The Haworth Press, Inc.\s*",
     r"© \d\d\d\d by The Haworth Press,\s*",
@@ -152,17 +149,14 @@ COPYRIGHT_REGEX = [
     r"© SAGE Publications \d\d\d\d.\s*",
     r"© SAGE Publications.\s*",
     r"Copyright ©\d\d\d\d Sage Publications Los Angeles.\s*",
-    r"age Publications Los Angeles, London.\s*", # typo
-    r"age Publications Los Angeles.\s*", # typo
-    r" age Publications London.\s*", # typo
-    r" age Publications.\s*", # typo
-
-
+    r"age Publications Los Angeles, London.\s*",  # typo
+    r"age Publications Los Angeles.\s*",  # typo
+    r" age Publications London.\s*",  # typo
+    r" age Publications.\s*",  # typo
 
     r"© \d\d\d\d The Author; Journal compilation © \d\d\d\d Blackwell Publishing Ltd.",
     r"© \d\d\d\d Blackwell Publishing Ltd.",
     r"© \d\d\d\d Blackwell Science Ltd.",
-
 
     r"Published by Oxford University Press on behalf of The British Association of Social Workers\.\s*",
     r"© \d\d\d\d British Association of Social Workers.\s*",
@@ -252,7 +246,6 @@ COPYRIGHT_REGEX = [
     r"© \d\d\d\d\s*",
     r"\[\s*",
     r"\]\s*",
-
 
     r"^,\s*",  # clean up
     r"^\d\d\d\d[\.,]+\s*",  # clean up

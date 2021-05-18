@@ -1,19 +1,24 @@
 """
-
+Helper functions
 """
+import json
 import logging
 import os
-from datetime import datetime
-import json
 import time
-import constants as const
-from constants import CACHE_DIR
+from datetime import datetime
 
+from constants import *
 
 log = logging.getLogger(__name__)
 
 
 def timed(function):
+    """
+    Decorator, measures time of the given function while executing.
+    :param function:
+    :return:
+    """
+
     def inner(*args, **kwargs):
         t1 = time.perf_counter()
         ret = function(*args, **kwargs)
@@ -34,7 +39,7 @@ def disable_elsapy_logging():
 
 def install_elsapy_workarounds() -> None:
     """
-    Install workaround
+    Install workarounds for the eslapy package.
     :return:
     """
     disable_elsapy_logging()
@@ -49,7 +54,7 @@ def read_resource(path):
 
 def configure_logging(path=None):
     if path is None:
-        path = os.path.join(const.LOG_DIR, f"{datetime.now().strftime('%Y%m%d-%H-%M-%S-%f')}.log")
+        path = os.path.join(LOG_DIR, f"{datetime.now().strftime('%Y%m%d-%H-%M-%S-%f')}.log")
 
     fmt = "[%(levelname)s] %(asctime)s - %(name)s: %(message)s"
     formatter = logging.Formatter(fmt=fmt)
@@ -66,8 +71,8 @@ def configure_logging(path=None):
 
 
 def get_elsa_config():
-    """Load configuration"""
-    con_file = open(const.CONFIG_FILE)
+    """Load configuration for scopus scraping"""
+    con_file = open(CONFIG_FILE)
     config = json.load(con_file)
     con_file.close()
     return config

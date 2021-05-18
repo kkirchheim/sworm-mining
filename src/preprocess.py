@@ -2,22 +2,22 @@
 """
 Scripts for preprocessing
 """
-from os import listdir
-import numpy as np
-import pandas as pd
-import spacy
-import time
-from sklearn.feature_extraction.text import TfidfVectorizer
-import click
-import logging
-import pickle5 as pickle  # legacy
 import csv
-from gensim.utils import simple_preprocess, lemmatize
+import logging
+import re
+import time
 from collections import OrderedDict, Counter
 from functools import partial
-import re
-import tqdm
+from os import listdir
 
+import click
+import numpy as np
+import pandas as pd
+import pickle5 as pickle  # legacy
+import spacy
+import tqdm
+from gensim.utils import simple_preprocess, lemmatize
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 # local imports
 import utils
@@ -57,7 +57,7 @@ class SpacyTokenizer:
                 r = " ".join(f).lower()
 
                 if n % 1000 == 0:
-                    log.info(f"Progress: {n/n_docs:.2%}")
+                    log.info(f"Progress: {n / n_docs:.2%}")
                 d.append(r)
 
             return d
@@ -100,7 +100,7 @@ class SpacyTokenizer:
                 all_adjective_pairs.append(doc_adjective_pairs)
 
                 if n % 1000 == 0:
-                    log.info(f"Progress: {n/n_docs:.2%}")
+                    log.info(f"Progress: {n / n_docs:.2%}")
 
             return all_adjective_pairs
 
