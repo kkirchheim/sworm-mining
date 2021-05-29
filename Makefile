@@ -12,10 +12,3 @@ preprocess:
 
 clustering:
 	python src/clusering.py tfidf
-
-docker-build:
-	docker build -t docker.kondas.de/sworm-bokeh .
-
-docker-push:
-	docker push docker.kondas.de/sworm-bokeh
-

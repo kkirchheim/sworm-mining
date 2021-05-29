@@ -2,11 +2,10 @@
 Contains code to prepare a single dataframe to be used as data source for the bokeh demo server
 """
 import logging
-import pickle
-
 import click
-import numpy as np
 import pandas as pd
+import numpy as np
+import pickle
 
 # own imports
 import utils as utils
@@ -21,14 +20,17 @@ def pre(x):
     return str(x)
 
 
-@click.command()
-def main():
-    """
-    Prepare a single hash map to be used as data source for the bokeh demo server
-    """
+@click.group()
+def cli():
     utils.configure_logging()
 
-    # load data
+
+@cli.command("dataframe")
+def main():
+    """
+    Prepare a single hash map to be used as data source for the django demo server
+    """
+
     df = pd.read_pickle(join(ARTIFACTS_DIR, "journals-with-stm-topics.pkl"))
     df = df[~df["dc:description"].isna()]
     X_embedded = pickle.load(open(join(BOKEH_DIR, "X-embedding-stm-tfidf.pkl"), "rb"))
@@ -44,6 +46,11 @@ def main():
     df["ts"] = df["prism:coverDate"].values.astype(np.int64) // 1e6
     df["author:name:pretty"] = df["author:name"].apply(pre)
 
+    # load raw topic thetas
+    df_stm_theta = pd.read_csv(CLEAN_TOPICS_STM, low_memory=False)
+    df_stm_theta["index"] = df.index
+    df_stm_theta.set_index("index", inplace=True)
+
     process_topics(df, topics_list)
 
     data = {"x1": X_embedded[:, 0],
@@ -54,20 +61,31 @@ def main():
             "label2": y_pred,
             "topics": df["stm:topics:pretty"],
             "title": df["dc:title"],
-            "date": df["prism:coverDate"].apply(lambda x: x.strftime("%d.%m.%Y")),
+            "date": df["prism:coverDate"],
             "timestamp": df["ts"],
             "author": df["author:name:pretty"],
             "journal": df["prism:publicationName"],
+            "journal-issn": df["prism:issn"],
             "cluster": [topics_list[c] for c in y_pred],
             "abstract": df["dc:description"],
             "doi": df["prism:doi"],
             "citations": df["citedby-count"],
-            "country": df["affiliation:country"]
+            "country": df["affiliation:country"],
             }
 
-    path = join(BOKEH_DIR, "data.pkl")
+    df_django = pd.DataFrame(data)
+    df_django.index.rename("index", inplace=True)
+    path = join(BOKEH_DIR, "django-data.pkl")
     log.info(f"Saving to {path}")
-    pd.DataFrame(data).to_pickle(path)
+    todrop = ~(df_django["journal-issn"].isna())
+    log.info(f"Dropping {(~todrop).sum()}")
+    df_django = df_django[todrop]
+    df_django.to_pickle(path)
+
+    path = join(BOKEH_DIR, "django-theta.pkl")
+    log.info(f"Saving to {path}")
+    df_stm_theta = df_stm_theta[todrop]
+    df_stm_theta.to_pickle(path)
 
     path = join(BOKEH_DIR, "topic-list.pkl")
     log.info(f"Saving to {path}")
@@ -112,6 +130,44 @@ def preprocess_journal_names(df):
         .apply(lambda x: x.replace("The Social Service Review", "Social Service Review"))
     log.info(df["prism:publicationName"].unique())
     log.info(len(df["prism:publicationName"].unique()))
+
+
+@cli.command("topics")
+def prepare_topics():
+    """
+    Extract top-topics from from dataframe
+    """
+    df = pd.read_pickle(JOURNALS_DF)
+    df_topics = pd.read_csv(CLEAN_TOPICS_STM, low_memory=False)
+
+    data = np.array(df_topics.values[:, 1:])
+
+    relevant_topics = np.argsort(data, axis=1)[:, :10:-1][:, :10]
+
+    topics = []
+    props = []
+
+    for n, a in enumerate(relevant_topics):
+        doc_topics = list(a)
+        doc_topics_probs = list(data[n, a])
+
+        tops = []
+        probs = []
+
+        for t, p in zip(doc_topics, doc_topics_probs):
+            if p < 0.1 and len(tops) > 0:
+                break
+            else:
+                tops.append(t)
+                probs.append(p)
+
+        topics.append(tops)
+        props.append(probs)
+
+    df = df[~df[ABSTRACTS].isna()]
+    df["stm:topics"] = pd.Series(topics, index=df.index)
+    df["stm:topics:probs"] = pd.Series(props, index=df.index)
+    pd.to_pickle(df, join(ARTIFACTS_DIR, "journals-with-stm-topics.pkl"))
 
 
 if __name__ == "__main__":
